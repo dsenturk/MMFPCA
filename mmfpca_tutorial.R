@@ -28,7 +28,7 @@
 ###########################################################################################
 # Set the working direction
 ###########################################################################################
-setwd("/Users/mingfei/Desktop/MMFPCA-VEPTF/mmfpca_github_241206")          # replace "path_to_file" with the working direction
+setwd("path_to_file")          # replace "path_to_file" with the working direction
 
 ###########################################################################################
 # Load packages and required files
