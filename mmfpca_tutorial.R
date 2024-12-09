@@ -13,7 +13,7 @@
 ##              with eigenscores correlated between different variates
 ## 4. mmfpca: Function that fits multilevel multivariate FPCA for high-dimensional 
 ##            functional data
-## 5. mufpca: Function that fits multilevel univaraite FPCA for high0dimensional functional
+## 5. mufpca: Function that fits multilevel univaraite FPCA for high-dimensional functional
 ##            data
 ###########################################################################################
 ## Required files:
