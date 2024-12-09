@@ -44,8 +44,8 @@ require(ggplot2)
 source("eigenfunction_construction.R")          # Functions that construct multi- and uni-variate eigenfunctions
 source("simulation_data_generation.R")          # Functions that generate multilevel multivariate functional data sets
 source("mmfpca.R")                              # Functions that fits multilevel multi- and uni-variate FPCA for high-dimensional functional data
-source("face.Cov.mfpca.R")                      # Supporting functions for multilevel univariate FPCA can be downloaded
-                                                # from https://github.com/refunders/refund/blob/master/R/face.Cov.mfpca.R
+source("face.Cov.mfpca.R")                      # Supporting functions for multilevel univariate FPCA
+                                                # available at https://github.com/refunders/refund/blob/master/R/face.Cov.mfpca.R
 source("mmfpca_plots.R")                        # Functions that generate figures for the simulation results
 
 
