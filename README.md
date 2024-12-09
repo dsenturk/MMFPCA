@@ -18,7 +18,7 @@ The contents of this folder allow for the implementation of the estimation algor
 
 ## Requirements
 
-The included R programs require R 4.3.1 and the packages listed in mmfpca_tutorial.R.
+- The included R programs require R 4.3.1 and the packages and files listed in mmfpca_tutorial.R.
 
 ## Installation
 
