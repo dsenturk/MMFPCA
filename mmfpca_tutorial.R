@@ -98,36 +98,34 @@ shared_uni_var2 = mufpca(z_matrix = shared_dt$z_var2,
 
 # 2.3 Compare the estimated eigenfunctions from the multilevel multi- and uni-variate FPCA
 #     with the true multivariate eigenfunctions ###########################################
-## subject-level
-levelplot(t(matrix(true_eigen$multi$lvl1$var1[,1], 50)))
-levelplot(t(matrix(shared_result$multi$eigen_lvl1_var1_multi_est[,1], 50)))
-levelplot(t(matrix(shared_result$uni$eigen_lvl1_var1_uni_est[,1]/sqrt(2), 50)))
-levelplot(t(matrix(true_eigen$multi$lvl1$var2[,1], 50)))
-levelplot(t(matrix(shared_result$multi$eigen_lvl1_var2_multi_est[,1], 50)))
-levelplot(t(matrix(shared_result$uni$eigen_lvl1_var2_uni_est[,1]/sqrt(2), 50)))
+shared_figures = efunction_plots(shared_dt,
+                                 shared_multi,
+                                 shared_uni_var1,
+                                 shared_uni_var2)
 
-## trial-level
-levelplot(t(matrix(true_eigen$multi$lvl2$var1[,1], 50)))
-levelplot(t(matrix(shared_result$multi$eigen_lvl2_var1_multi_est[,1], 50)))
-levelplot(t(matrix(shared_result$uni$eigen_lvl2_var1_uni_est[,1]/sqrt(2), 50)))
-levelplot(t(matrix(true_eigen$multi$lvl2$var2[,1], 50)))
-levelplot(t(matrix(shared_result$multi$eigen_lvl2_var2_multi_est[,1], 50)))
-levelplot(t(matrix(shared_result$uni$eigen_lvl2_var2_uni_est[,1]/sqrt(2), 50)))
+## subject-level
+print(shared_figures$efunctions$level1$var1)              # Figure S3
+print(shared_figures$efunctions$level1$var2)              # Figure S4
+
+## subject-level
+print(shared_figures$efunctions$level2$var1)              # Figure S5
+print(shared_figures$efunctions$level2$var2)              # Figure S6
+
 
 # 2.4 Compare the data reconstruction from the multilevel multi- and uni-variate FPCA ###
 ## randomly select a single trial from a subject
 subject = sample(c(1:50), size = 1)
 trial = sample(c(1:50), size = 1)
 
-## variate 1
-levelplot(t(matrix(shared_dt$z_var1[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(shared_result$multi$z_multi_pred_var1[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(shared_result$uni$z_uni_pred_var1[(50*(subject-1)+trial),], 50)))
+## generate the trial-specific data reconstruction figures for the selected trial
+shared_reconstruction = reconstruction_plots(shared_dt,
+                                             shared_multi,
+                                             shared_uni_var1,
+                                             shared_uni_var2,
+                                             subject,
+                                             trial)
 
-## variate 2
-levelplot(t(matrix(shared_dt$z_var2[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(shared_result$multi$z_multi_pred_var2[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(shared_result$uni$z_uni_pred_var2[(50*(subject-1)+trial),], 50)))
+print(shared_reconstruction)                             # Figure S7
 
 
 
