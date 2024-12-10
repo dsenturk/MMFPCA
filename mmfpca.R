@@ -9,7 +9,7 @@
 ##               functional data
 ##    2. mufpca: Function that fits multilevel univariate FPCA using fast covariance  
 ##               estimation (FACE) method tailored for two-dimensional functional data 
-## Supporting functions used by main function:
+## Supporting functions used by the main function:
 ##    1. mfpca.face_center: Function that fits multilevel univariate FPCA for one-dimensional
 ##                          functional observations using FACE method (Cui et al. 2023) given
 ##                          pre-estimated mean function
