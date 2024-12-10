@@ -2,13 +2,13 @@
 
 ## Contents of this folder
 
-- mmfpca_tutorial.R: A step-by-step implementation of the proposed multilevel multivariate FPCA and the associated procedures including simulated data generation and model fitting described in "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations."
+- mmfpca_tutorial.R: A step-by-step implementation of the proposed multilevel multivariate FPCA model for high-dimensional functional data and the associated procedures including simulated data generation and model fitting described in "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations."
   
 - eigenfunction_construction.R: Functions constructing the multilevel multi- and uni-varaite two-dimensional eigenfunctions described in the Section 3 of "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations."
   
-- simulation_data_generation.R: Functions simulating multilevel multivariate two-dimensional functional data under the simulation designs stated in Section 3 of "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations."
+- simulation_data_generation.R: Functions simulating multilevel multivariate two-dimensional functional data under the simulation settings stated in Section 3 of "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations."
   
-- mmfpca.R: Function of the algorithm fitting multilevel multivariate FPCA proposed in Section 2 of "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations."
+- mmfpca.R: Function of the algorithm fitting multilevel multivariate FPCA for high-dimensional functional data proposed in Section 2 of "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations."
 
 - mmfpca_plots.R: Functions that generate figures for simulation results in Section 3 of "Joint Modeling of Evoked and Induced Event-Related Spectral Perturbations." 
 
