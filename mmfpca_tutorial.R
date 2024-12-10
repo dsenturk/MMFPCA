@@ -13,8 +13,14 @@
 ##              with eigenscores correlated between different variates
 ## 4. mmfpca: Function that fits multilevel multivariate FPCA for high-dimensional 
 ##            functional data
-## 5. mufpca: Function that fits multilevel univaraite FPCA for high-dimensional functional
+## 5. mufpca: Function that fits multilevel univariate FPCA for high-dimensional functional
 ##            data
+## 6. efunction_plots: Function that generates figures for the true eigenfunctions and the
+##                     estimated eigenfunctions from the multilevel multi- and uni-variate
+##                     FPCA
+## 7. reconstruction_plots: Function that generates figures for the trial-specific functional
+##                          data and reconstruction using multi-level multi- and uni-variate
+##                          FPCA for a single trial
 ###########################################################################################
 ## Required files:
 ##    1. eigenfunction_construction.R
@@ -28,7 +34,8 @@
 ###########################################################################################
 # Set the working direction
 ###########################################################################################
-setwd("path_to_file")          # replace "path_to_file" with the working direction
+#setwd("path_to_file")          # replace "path_to_file" with the working direction
+setwd("/Users/mingfei/Desktop/MMFPCA-VEPTF/mmfpca_github_241206")
 
 ###########################################################################################
 # Load packages and required files
@@ -56,11 +63,11 @@ source("mmfpca_plots.R")                        # Functions that generate figure
 true_eigen = eigenf_construct()
 
 ###########################################################################################
-# 2. One run of simulation with shared multivariate eigenscores
+# 2. One run of simulation under simulation setting 1
 ###########################################################################################
 
 # 2.1 Generate a 50-subject 50-trial high-noise bivariate two-dimensional functional outcome 
-#     using shared eigenscores #############################################################
+#     under simulation setting 1 ###########################################################
 shared_dt = shared_gen(eigen_lvl1_var1 = true_eigen$multi$lvl1$var1,
                        eigen_lvl1_var2 = true_eigen$multi$lvl1$var2,
                        eigen_lvl2_var1 = true_eigen$multi$lvl2$var1,
@@ -80,36 +87,45 @@ shared_multi = mmfpca(z_var1 = shared_dt$z_var1,
                       id_array = shared_dt$id_array,
                       x_axis = seq(0.02, 1, length = 50),
                       y_axis = seq(0.02, 1, length = 50),
-                      mufpca_pve = 0.999,
-                      mmfpca_pve = 0.95)
+                      mufpca_pve = 0.99,
+                      mmfpca_pve = 0.95,
+                      efunctions_multi = TRUE)
 
-## multilevel univaraite FPCA for variate 1 and 2 separately
+## multilevel univariate FPCA for variate 1 and 2 separately
 shared_uni_var1 = mufpca(z_matrix = shared_dt$z_var1,
                          id_array = shared_dt$id_array,
                          x_axis = seq(0.02, 1, length = 50),
                          y_axis = seq(0.02, 1, length = 50),
-                         pve = 0.95)
+                         pve = 0.95,
+                         efunctions_multi = TRUE)
 
 shared_uni_var2 = mufpca(z_matrix = shared_dt$z_var2,
                          id_array = shared_dt$id_array,
                          x_axis = seq(0.02, 1, length = 50),
                          y_axis = seq(0.02, 1, length = 50),
-                         pve = 0.95)
+                         pve = 0.95,
+                         efunctions_multi = TRUE)
 
 # 2.3 Compare the estimated eigenfunctions from the multilevel multi- and uni-variate FPCA
 #     with the true multivariate eigenfunctions ###########################################
-shared_figures = efunction_plots(shared_dt,
-                                 shared_multi,
-                                 shared_uni_var1,
-                                 shared_uni_var2)
+## match the sign of estimated eigenfunctions to the true eigenfunctions
+shared_efunctions_matched = efunctions_match(true_eigen$multi,
+                                             shared_multi$efunctions,
+                                             shared_uni_var1$efunctions,
+                                             shared_uni_var2$efunctions)
 
-## subject-level
-print(shared_figures$efunctions$level1$var1)              # Figure S3
-print(shared_figures$efunctions$level1$var2)              # Figure S4
+## generate comparison plots of the true and estimated eigenfunctions
+shared_figures = efunctions_plots(shared_efunctions_matched,
+                                  x_axis = seq(0.02, 1, length = 50),
+                                  y_axis = seq(0.02, 1, length = 50))
 
-## subject-level
-print(shared_figures$efunctions$level2$var1)              # Figure S5
-print(shared_figures$efunctions$level2$var2)              # Figure S6
+## subject level
+print(shared_figures$lvl1$var1)              # Figure S3
+print(shared_figures$lvl1$var2)              # Figure S4
+
+## trial level
+print(shared_figures$lvl2$var1)              # Figure S5
+print(shared_figures$lvl2$var2)              # Figure S6
 
 
 # 2.4 Compare the data reconstruction from the multilevel multi- and uni-variate FPCA ###
@@ -122,6 +138,8 @@ shared_reconstruction = reconstruction_plots(shared_dt,
                                              shared_multi,
                                              shared_uni_var1,
                                              shared_uni_var2,
+                                             x_axis = seq(0.02, 1, length = 50),
+                                             y_axis = seq(0.02, 1, length = 50),
                                              subject,
                                              trial)
 
@@ -130,11 +148,11 @@ print(shared_reconstruction)                             # Figure S7
 
 
 ###########################################################################################
-# 3. One run of simulation with shared multivariate eigenscores
+# 3. One run of simulation under simulation setting 2
 ###########################################################################################
 
 # 3.1 Generate a 50-subject 50-trial high-noise bivariate two-dimensional functional outcome 
-#     using correlated eigenscores ########################################################
+#     under simulation setting 2 ###########################################################
 corr_dt = corr_gen(eigen_lvl1_var1 = true_eigen$uni$lvl1$var1,
                    eigen_lvl1_var2 = true_eigen$uni$lvl1$var2,
                    eigen_lvl2_var1 = true_eigen$uni$lvl2$var1,
@@ -149,44 +167,75 @@ corr_dt = corr_gen(eigen_lvl1_var1 = true_eigen$uni$lvl1$var1,
                    N = 50,
                    R = 50)
 
-# 3.2 Fit the multilevel multi- and uni-variate FPCA ######################################
-corr_result = mmfpca(z_var1 = corr_dt$z_var1,
-                     z_var2 = corr_dt$z_var2,
-                     id_array = corr_dt$id_array,
-                     x_axis = seq(0.02, 1, length = 50),
-                     y_axis = seq(0.02, 1, length = 50),
-                     mufpca_pve = 0.999,
-                     mmfpca_pve = 0.95)
+# 2.2 Fit the multilevel multi- and uni-variate FPCA ######################################
+## multilevel multivariate FPCA
+corr_multi = mmfpca(z_var1 = corr_dt$z_var1,
+                    z_var2 = corr_dt$z_var2,
+                    id_array = corr_dt$id_array,
+                    x_axis = seq(0.02, 1, length = 50),
+                    y_axis = seq(0.02, 1, length = 50),
+                    mufpca_pve = 0.99,
+                    mmfpca_pve = 0.95,
+                    efunctions_multi = FALSE)
+
+## multilevel univariate FPCA for variate 1 and 2 separately
+corr_uni_var1 = mufpca(z_matrix = corr_dt$z_var1,
+                       id_array = corr_dt$id_array,
+                       x_axis = seq(0.02, 1, length = 50),
+                       y_axis = seq(0.02, 1, length = 50),
+                       pve = 0.95,
+                       efunctions_multi = FALSE)
+
+corr_uni_var2 = mufpca(z_matrix = corr_dt$z_var2,
+                       id_array = corr_dt$id_array,
+                       x_axis = seq(0.02, 1, length = 50),
+                       y_axis = seq(0.02, 1, length = 50),
+                       pve = 0.95,
+                       efunctions_multi = FALSE)
 
 # 2.3 Compare the estimated eigenfunctions from the multilevel multi- and uni-variate FPCA
 #     with the true multivariate eigenfunctions ###########################################
-## subject-level
-levelplot(t(matrix(true_eigen$uni$lvl1$var1[,1], 50)))
-levelplot(t(matrix(corr_result$multi$eigen_lvl1_var1_multi_est[,1]*sqrt(2), 50)))
-levelplot(t(matrix(corr_result$uni$eigen_lvl1_var1_uni_est[,1], 50)))
-levelplot(t(matrix(true_eigen$uni$lvl1$var2[,1], 50)))
-levelplot(t(matrix(corr_result$multi$eigen_lvl1_var2_multi_est[,1]*sqrt(2), 50)))
-levelplot(t(matrix(corr_result$uni$eigen_lvl1_var2_uni_est[,1], 50)))
+## match the sign of estimated eigenfunctions to the true eigenfunctions
+corr_efunctions_matched = efunctions_match(true_eigen$uni,
+                                           corr_multi$efunctions,
+                                           corr_uni_var1$efunctions,
+                                           corr_uni_var2$efunctions)
 
-## trial-level
-levelplot(t(matrix(true_eigen$uni$lvl2$var1[,1], 50)))
-levelplot(t(matrix(corr_result$multi$eigen_lvl2_var1_multi_est[,1]*sqrt(2), 50)))
-levelplot(t(matrix(corr_result$uni$eigen_lvl2_var1_uni_est[,1], 50)))
-levelplot(t(matrix(true_eigen$uni$lvl2$var2[,1], 50)))
-levelplot(t(matrix(corr_result$multi$eigen_lvl2_var2_multi_est[,1]*sqrt(2), 50)))
-levelplot(t(matrix(corr_result$uni$eigen_lvl2_var2_uni_est[,1], 50)))
+## generate comparison plots of the true and estimated eigenfunctions
+corr_figures = efunctions_plots(corr_efunctions_matched,
+                                x_axis = seq(0.02, 1, length = 50),
+                                y_axis = seq(0.02, 1, length = 50))
+
+## subject-level
+print(corr_figures$lvl1$var1)                           # Figure S8
+print(corr_figures$lvl1$var2)                           # Figure S9
+
+## subject-level
+print(corr_figures$lvl2$var1)                           # Figure S10
+print(corr_figures$lvl2$var2)                           # Figure S11
+
 
 # 2.4 Compare the data reconstruction from the multilevel multi- and uni-variate FPCA ###
 ## randomly select a single trial from a subject
 subject = sample(c(1:50), size = 1)
 trial = sample(c(1:50), size = 1)
 
-## variate 1
-levelplot(t(matrix(corr_dt$z_var1[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(corr_result$multi$z_multi_pred_var1[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(corr_result$uni$z_uni_pred_var1[(50*(subject-1)+trial),], 50)))
+## generate the trial-specific data reconstruction figures for the selected trial
+corr_reconstruction = reconstruction_plots(corr_dt,
+                                           corr_multi,
+                                           corr_uni_var1,
+                                           corr_uni_var2,
+                                           x_axis = seq(0.02, 1, length = 50),
+                                           y_axis = seq(0.02, 1, length = 50),
+                                           subject,
+                                           trial)
 
-## variate 2
-levelplot(t(matrix(corr_dt$z_var2[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(corr_result$multi$z_multi_pred_var2[(50*(subject-1)+trial),], 50)))
-levelplot(t(matrix(corr_result$uni$z_uni_pred_var2[(50*(subject-1)+trial),], 50)))
+print(corr_reconstruction)                             # Figure S12
+
+
+
+
+
+
+
+
