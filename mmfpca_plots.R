@@ -158,10 +158,10 @@ efunctions_plots = function(
   m2_true = ncol(efunctions_matched$true$lvl2$var1)
   m1_multi = ncol(efunctions_matched$multi$lvl1$var1)
   m2_multi = ncol(efunctions_matched$multi$lvl2$var1)
-  m1_uni_var1 = ncol(efunctions_matched$un$lvl1$var1)
-  m2_uni_var1 = ncol(efunctions_matched$un$lvl2$var1)
-  m1_uni_var2 = ncol(efunctions_matched$un$lvl1$var2)
-  m2_uni_var2 = ncol(efunctions_matched$un$lvl2$var2)
+  m1_uni_var1 = ncol(efunctions_matched$uni$lvl1$var1)
+  m2_uni_var1 = ncol(efunctions_matched$uni$lvl2$var1)
+  m1_uni_var2 = ncol(efunctions_matched$uni$lvl1$var2)
+  m2_uni_var2 = ncol(efunctions_matched$uni$lvl2$var2)
   
   # generate plots comparing the true eigenfunctions and the multi- and uni-variate estimation at each level for each variate
   
@@ -170,78 +170,90 @@ efunctions_plots = function(
   efunctions_lvl1_var1 = data.frame(z = c(efunctions_matched$true$lvl1$var1),
                                     x = rep(rep(x_axis, each = M_y), m1_true),
                                     y = rep(rep(y_axis, M_x), m1_true),
-                                    number = rep(c("1st", "2nd", "3nd", paste0(4:m1_true, "th")),
-                                                   each = M),
+                                    number = rep(c(1:m1_true), each = M),
                                     type = "True") %>%
     union(data.frame(z = c(efunctions_matched$multi$lvl1$var1[,1:min(m1_true, m1_multi)]),
                      x = rep(rep(x_axis, each = M_y), min(m1_true, m1_multi)),
                      y = rep(rep(y_axis, M_x), min(m1_true, m1_multi)),
-                     number = rep(c("1st", "2nd", "3nd",paste0(4:min(m1_true, m1_multi), "th")),
-                                  each = M),
+                     number = rep(c(1:min(m1_true, m1_multi)), each = M),
                      type = "Multivariate estimation")) %>%
     union(data.frame(z = c(efunctions_matched$uni$lvl1$var1[,1:min(m1_true, m1_uni_var1)]),
                      x = rep(rep(x_axis, each = M_y), min(m1_true, m1_uni_var1)),
                      y = rep(rep(y_axis, M_x), min(m1_true, m1_uni_var1)),
-                     number = rep(c("1st", "2nd", "3nd", paste0(4:min(m1_true, m1_uni_var1), "th")),
-                                  each = M),
-                     type = "Univariate estimation"))
+                     number = rep(c(1:min(m1_true, m1_uni_var1)), each = M),
+                     type = "Univariate estimation")) %>%
+    mutate(number = case_when(
+      number == 1 ~ "1st",
+      number == 2 ~ "2nd",
+      number == 3 ~ "3rd",
+      TRUE ~ paste0(number, "th")
+    ))
   ### subject level: variate 2
   efunctions_lvl1_var2 = data.frame(z = c(efunctions_matched$true$lvl1$var2),
                                     x = rep(rep(x_axis, each = M_y), m1_true),
                                     y = rep(rep(y_axis, M_x), m1_true),
-                                    number = rep(c("1st", "2nd", "3nd", paste0(4:m1_true, "th")),
-                                                 each = M),
+                                    number = rep(c(1:m1_true), each = M),
                                     type = "True") %>%
     union(data.frame(z = c(efunctions_matched$multi$lvl1$var2[,1:min(m1_true, m1_multi)]),
                      x = rep(rep(x_axis, each = M_y), min(m1_true, m1_multi)),
                      y = rep(rep(y_axis, M_x), min(m1_true, m1_multi)),
-                     number = rep(c("1st", "2nd", "3nd",paste0(4:min(m1_true, m1_multi), "th")),
-                                  each = M),
+                     number = rep(c(1:min(m1_true, m1_multi)), each = M),
                      type = "Multivariate estimation")) %>%
     union(data.frame(z = c(efunctions_matched$uni$lvl1$var2[,1:min(m1_true, m1_uni_var2)]),
                      x = rep(rep(x_axis, each = M_y), min(m1_true, m1_uni_var2)),
                      y = rep(rep(y_axis, M_x), min(m1_true, m1_uni_var2)),
-                     number = rep(c("1st", "2nd", "3nd", paste0(4:min(m1_true, m1_uni_var2), "th")),
-                                  each = M),
-                     type = "Univariate estimation"))
+                     number = rep(c(1:min(m1_true, m1_uni_var2)), each = M),
+                     type = "Univariate estimation")) %>%
+    mutate(number = case_when(
+      number == 1 ~ "1st",
+      number == 2 ~ "2nd",
+      number == 3 ~ "3rd",
+      TRUE ~ paste0(number, "th")
+    ))
   ### trial level: variate 1
   efunctions_lvl2_var1 = data.frame(z = c(efunctions_matched$true$lvl2$var1),
                                     x = rep(rep(x_axis, each = M_y), m2_true),
                                     y = rep(rep(y_axis, M_x), m2_true),
-                                    number = rep(c("1st", "2nd", "3nd", paste0(4:m2_true, "th")),
-                                                 each = M),
+                                    number = rep(c(1:m2_true), each = M),
                                     type = "True") %>%
     union(data.frame(z = c(efunctions_matched$multi$lvl2$var1[,1:min(m2_true, m2_multi)]),
                      x = rep(rep(x_axis, each = M_y), min(m2_true, m2_multi)),
                      y = rep(rep(y_axis, M_x), min(m2_true, m2_multi)),
-                     number = rep(c("1st", "2nd", "3nd",paste0(4:min(m2_true, m2_multi), "th")),
-                                  each = M),
+                     number = rep(c(1:min(m2_true, m2_multi)), each = M),
                      type = "Multivariate estimation")) %>%
     union(data.frame(z = c(efunctions_matched$uni$lvl2$var1[,1:min(m2_true, m2_uni_var1)]),
                      x = rep(rep(x_axis, each = M_y), min(m2_true, m2_uni_var1)),
                      y = rep(rep(y_axis, M_x), min(m2_true, m2_uni_var1)),
-                     number = rep(c("1st", "2nd", "3nd", paste0(4:min(m2_true, m2_uni_var1), "th")),
-                                  each = M),
-                     type = "Univariate estimation"))
+                     number = rep(c(1:min(m2_true, m2_uni_var1)), each = M),
+                     type = "Univariate estimation")) %>%
+    mutate(number = case_when(
+      number == 1 ~ "1st",
+      number == 2 ~ "2nd",
+      number == 3 ~ "3rd",
+      TRUE ~ paste0(number, "th")
+    ))
   ### trial level: variate 2
   efunctions_lvl2_var2 = data.frame(z = c(efunctions_matched$true$lvl2$var2),
                                     x = rep(rep(x_axis, each = M_y), m2_true),
                                     y = rep(rep(y_axis, M_x), m2_true),
-                                    number = rep(c("1st", "2nd", "3nd", paste0(4:m2_true, "th")),
-                                                 each = M),
+                                    number = rep(c(1:m2_true), each = M),
                                     type = "True") %>%
     union(data.frame(z = c(efunctions_matched$multi$lvl2$var2[,1:min(m2_true, m2_multi)]),
                      x = rep(rep(x_axis, each = M_y), min(m2_true, m2_multi)),
                      y = rep(rep(y_axis, M_x), min(m2_true, m2_multi)),
-                     number = rep(c("1st", "2nd", "3nd",paste0(4:min(m2_true, m2_multi), "th")),
-                                  each = M),
+                     number = rep(c(1:min(m2_true, m2_multi)), each = M),
                      type = "Multivariate estimation")) %>%
     union(data.frame(z = c(efunctions_matched$uni$lvl2$var2[,1:min(m2_true, m2_uni_var2)]),
                      x = rep(rep(x_axis, each = M_y), min(m2_true, m2_uni_var2)),
                      y = rep(rep(y_axis, M_x), min(m2_true, m2_uni_var2)),
-                     number = rep(c("1st", "2nd", "3nd", paste0(4:min(m2_true, m2_uni_var2), "th")),
-                                  each = M),
-                     type = "Univariate estimation"))
+                     number = rep(c(1:min(m2_true, m2_uni_var2)), each = M),
+                     type = "Univariate estimation")) %>%
+    mutate(number = case_when(
+      number == 1 ~ "1st",
+      number == 2 ~ "2nd",
+      number == 3 ~ "3rd",
+      TRUE ~ paste0(number, "th")
+    ))
   
   ## ensure 'type' is a factor with the desired level order
   efunctions_lvl1_var1$type = factor(efunctions_lvl1_var1$type, 
@@ -325,7 +337,7 @@ reconstruction_plots = function(
   N = length(unique(z_data$id_array))                  # number of subjects
   R_list = array(dim = N)                              # number of trials for each subject
   for (i in 1:N){
-    R_list[i] = sum(as.numeric(id_array == i))
+    R_list[i] = sum(as.numeric(z_data$id_array == i))
   }
   if(subject == 1){
     trial_index = trial
