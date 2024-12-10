@@ -5,10 +5,10 @@
 ###########################################################################################
 ## Functions included:
 ## Main function:
-##    1. shared_gen: Function that generates a multilevel multivariate functional data set
-##                   with shared eigenscores across different variates
-##    2. corr_gen: Function that generates a multilevel multivariate functional data set
-##                 with eigenscores correlated between different variates
+##    1. shared_gen: Function that generates a multilevel multivariate two-dimensional 
+##                   functional data set under simulation setting 1
+##    2. corr_gen: Function that generates a multilevel multivariate two-dimensional 
+##                 functional data set under simulation setting 2
 ###########################################################################################
 
 
