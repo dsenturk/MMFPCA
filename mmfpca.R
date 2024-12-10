@@ -31,8 +31,10 @@ mmfpca = function(
     id_array,               # id information for each trial to identify the subject it belong to (array of length R_sum)
     x_axis,                 # x axis of the two-dimensional functional domain (array of length M_x)
     y_axis,                 # y axis of the two-dimensional functional domain (array of length M_y)
-    mufpca_pve,             # percentage of variance explained threshold for multilevel univaraite FPCA (scalar < 1)
-    mmfpca_pve){            # percentage of variance explained threshold for multilevel multivariate FPCA (scalar < 1)
+    mufpca_pve,             # percentage of variance explained (pve) threshold for multilevel univariate FPCA (scalar < 1)
+    mmfpca_pve,             # pve threshold for multilevel multivariate FPCA (scalar < 1)
+    efunctions_multi = T){  # indicator of whether the data is generated using multivariate eigenfunctions 
+                            # (logical, TRUE = using multivariate eigenfunctions, FALSE = using univariate eigenfunctions)
   
   #########################################################################################
   ## Description: Function that fits multilevel multivariate FPCA for two-dimensional functional data
@@ -112,7 +114,7 @@ mmfpca = function(
   ## eigen decomposition of subject-level eigenscore covariance matrix
   Z_joint_lvl1.eigen = eigen(Z_joint_lvl1)
   ## subject-level multivariate eigenvalues
-  evalue_lvl1_multi_est = Z_joint_lvl1.eigen$values
+  evalues_lvl1_multi_est = Z_joint_lvl1.eigen$values
   ## subject-level multivariate eigenfunctions
   eigen_lvl1_var1_multi_est = mod_var1$efunctions$level1[,1:m1_lvl1] %*%
     Z_joint_lvl1.eigen$vectors[1:m1_lvl1, ]
@@ -133,7 +135,7 @@ mmfpca = function(
   ## eigen decomposition of trial-level eigenscore covariance matrix
   Z_joint_lvl2.eigen = eigen(Z_joint_lvl2)
   ## trial-level multivariate eigenvalues
-  evalue_lvl2_multi_est = Z_joint_lvl2.eigen$values
+  evalues_lvl2_multi_est = Z_joint_lvl2.eigen$values
   ## trial-level multivariate eigenfunctions
   eigen_lvl2_var1_multi_est = mod_var1$efunctions$level2[,1:m1_lvl2] %*%
     Z_joint_lvl2.eigen$vectors[1:m1_lvl2, ]
@@ -146,8 +148,8 @@ mmfpca = function(
     Z_joint_lvl2.eigen$vectors[c(m1_lvl2 + 1:m2_lvl2), ]
   
   # retain a finite number of multivariate eigencomponents based on the pve criteria
-  m_multi_pred_lvl1 = min(which(mufpca_pve*cumsum(evalue_lvl1_multi_est)/sum(evalue_lvl1_multi_est) >= mmfpca_pve))
-  m_multi_pred_lvl2 = min(which(mufpca_pve*cumsum(evalue_lvl2_multi_est)/sum(evalue_lvl2_multi_est) >= mmfpca_pve))
+  m_multi_pred_lvl1 = min(which(cumsum(evalues_lvl1_multi_est)/sum(evalues_lvl1_multi_est) >= mmfpca_pve))
+  m_multi_pred_lvl2 = min(which(cumsum(evalues_lvl2_multi_est)/sum(evalues_lvl2_multi_est) >= mmfpca_pve))
   
   # prediction: reconstruct the multilevel multivariate two-dimensional functional data via 
   # K-L expansion with estimated eigencomponents
@@ -174,19 +176,47 @@ mmfpca = function(
     }
   }
   
-  # store results into a list structure
-  mod_mmfpca = list(mu_var1 = var1_mu_fit,
-                    mu_var2 = var2_mu_fit,
-                    efunction_lvl1_var1 = eigen_lvl1_var1_multi_est[,1:m_multi_pred_lvl1],
-                    efunction_lvl1_var2 = eigen_lvl1_var2_multi_est[,1:m_multi_pred_lvl1],
-                    efunction_lvl2_var1 = eigen_lvl2_var1_multi_est[,1:m_multi_pred_lvl2],
-                    efunction_lvl2_var2 = eigen_lvl2_var2_multi_est[,1:m_multi_pred_lvl2],
-                    evalue_lvl1 = evalue_lvl1_multi_est[1:m_multi_pred_lvl1],
-                    evalue_lvl2 = evalue_lvl2_multi_est[1:m_multi_pred_lvl2],
-                    score_lvl1 = score_lvl1_multi_est[,1:m_multi_pred_lvl1],
-                    score_lvl2 = score_lvl2_multi_est[,1:m_multi_pred_lvl2],
-                    z_pred_var1 = z_multi_pred_var1,
-                    z_pred_var2 = z_multi_pred_var2)
+  # store results into list structures
+  mu = list()                                                             # mean functions
+  mu$var1 = var1_mu_fit
+  mu$var2 = var2_mu_fit
+  efunctions = list()                                                     # eigenfunctions
+  efunctions$lvl1$var1 = eigen_lvl1_var1_multi_est[,1:m_multi_pred_lvl1]
+  efunctions$lvl1$var2 = eigen_lvl1_var2_multi_est[,1:m_multi_pred_lvl1]
+  efunctions$lvl2$var1 = eigen_lvl2_var1_multi_est[,1:m_multi_pred_lvl2]
+  efunctions$lvl2$var2 = eigen_lvl2_var2_multi_est[,1:m_multi_pred_lvl2]
+  evalues = list()                                                        # eigenvalues
+  evalues$lvl1 = evalues_lvl1_multi_est[1:m_multi_pred_lvl1]
+  evalues$lvl2 = evalues_lvl2_multi_est[1:m_multi_pred_lvl2]
+  scores = list()                                                         # eigenscores
+  scores$lvl1 = score_lvl1_multi_est[,1:m_multi_pred_lvl1]
+  scores$lvl2 = score_lvl2_multi_est[,1:m_multi_pred_lvl2]
+  z_hat = list()                                                          # trial-specific data reconstruction
+  z_hat$var1 = z_multi_pred_var1
+  z_hat$var2 = z_multi_pred_var2
+  z_data = list()                                                         # original data
+  z_data$var1 = z_var1
+  z_data$var2 = z_var2
+  
+  # scale the eigenfunctions, eigenvalues, and eigenscores by sqrt(2) to match the true eigenfunctions
+  # if the data are generated using univariate eigenfunctions
+  if (! efunctions_multi){
+    efunctions$lvl1$var1 = efunctions$lvl1$var1*sqrt(2)
+    efunctions$lvl1$var2 = efunctions$lvl1$var2*sqrt(2)
+    efunctions$lvl2$var1 = efunctions$lvl2$var1*sqrt(2)
+    efunctions$lvl2$var2 = efunctions$lvl2$var2*sqrt(2)
+    evalues$lvl1 = evalues$lvl1/2
+    evalues$lvl2 = evalues$lvl2/2
+    scores$lvl1 = scores$lvl1/sqrt(2)
+    scores$lvl2 = scores$lvl2/sqrt(2)
+  }
+  
+  mod_mmfpca = list(mu = mu,
+                    efunctions = efunctions,
+                    evalues = evalues,
+                    scores = scores,
+                    z_hat = z_hat,
+                    z_data = z_data)
   return(mod_mmfpca)
 }
 
@@ -201,7 +231,9 @@ mufpca = function(
     id_array,               # id information for each trial to identify the subject it belong to (array of length R_sum)
     x_axis,                 # x axis of the two-dimensional functional domain (array of length M_x)
     y_axis,                 # y axis of the two-dimensional functional domain (array of length M_y)
-    pve){                   # percentage of variance explained threshold for multilevel univariate FPCA (scalar < 1)
+    pve,                    # pve threshold for multilevel univariate FPCA (scalar < 1)
+    efunctions_multi = F){  # indicator of whether the data is generated using multivariate eigenfunctions 
+                            # (logical, TRUE = using multivariate eigenfunctions, FALSE = using univariate eigenfunctions)
 
   #########################################################################################
   ## Description: Function that fits multilevel univariate FPCA using fast covariance  
@@ -248,15 +280,35 @@ mufpca = function(
                                  mu = z_mu_fit)                       # estimated univariate (vectorized two-dimensional) overall mean function
   
   
+  # store results into list structures
+  efunctions = list()                                                     # eigenfunctions
+  efunctions$lvl1 = mod_center$efunctions$level1
+  efunctions$lvl2 = mod_center$efunctions$level2
+  evalues = list()                                                        # eigenvalues
+  evalues$lvl1 = mod_center$evalues$level1
+  evalues$lvl2 = mod_center$evalues$level2
+  scores = list()                                                         # eigenscores
+  scores$lvl1 = mod_center$scores$level1
+  scores$lvl2 = mod_center$scores$level2
+  
+  # scale the eigenfunctions, eigenvalues, and eigenscores by sqrt(2) to match the true eigenfunctions
+  # if the data are generated using multivariate eigenfunctions
+  if (efunctions_multi){
+    efunctions$lvl1 = efunctions$lvl1/sqrt(2)
+    efunctions$lvl2 = efunctions$lvl2/sqrt(2)
+    mod_center$evalues$level1 = mod_center$evalues$level1*2
+    mod_center$evalues$level2 = mod_center$evalues$level2*2
+    mod_center$scores$level1 = mod_center$scores$level1*sqrt(2)
+    mod_center$scores$level2 = mod_center$scores$level2*sqrt(2)
+  }
+  
   # save model components
-  mod_mufpca = list(mu = z_mu_fit,                                    # estimated overall mean function
-                    efunction_lvl1 = mod_center$efunctions$level1,    # estimated subject-level eigenfunctions
-                    efunction_lvl2 = mod_center$efunctions$level2,    # estimated trial-level eigenfunctions
-                    evalue_lvl1 = mod_center$evalues$level1,          # estimated subject-level eigenvalues
-                    evalue_lvl2 = mod_center$evalues$level2,          # estimated trial-level eigenvalues
-                    score_lvl1 = mod_center$scores$level1,            # estimated subject-level eigenscores
-                    score_lvl2 = mod_center$scores$level2,            # estimated trial-level eigenscores
-                    z_pred = mod_center$Xhat)                         # trial-specific functional data reconstructed using model components
+  mod_mufpca = list(mu = z_mu_fit,                                    # overall mean function
+                    efunctions = efunctions, 
+                    evalues = evalues, 
+                    scores = scores, 
+                    z_hat = mod_center$Xhat,                         # original data
+                    z_data = z_matrix)                                # trial-specific functional data reconstructed using model components
   
   return(mod_mufpca)
 }
@@ -309,7 +361,7 @@ mfpca.face_center = function (Y,                    # multilevel univariate func
   ##                scores: estimated subject- and trail-level eigenscores
   ##                Xhat: prediction for trial-level functional data
   ##              see '?refund::mfpca.face' for more details
-  ## Note: 1. In line 357-360, the overall mean function is provided by the input 'mu' 
+  ## Note: 1. In line 451-454, the overall mean function is provided by the input 'mu' 
   ##       2. The rest of the function is the same as the 'mfpca.face' function in
   ##          the 'refund' package. See '?refund::mfpca.face' for more details.
   ## Supporting functions: Supporting functions 'face.Cov.mfpca' and 'matrix.multiply.mfpca'
