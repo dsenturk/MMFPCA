@@ -67,7 +67,7 @@ mmfpca = function(
                             y_axis = rep(y_axis, length(x_axis)),
                             z_mean = c(z_var2_mean))
   ## smooth the two-dimensional empirical mean function using the thin plate regression splines
-  ## using the 'gam' function in the 'mgcv' package
+  ## via the 'gam' function in the 'mgcv' package
   ## see '?mgcv::gam' for more details on the configuration of the smoothing process
   var1_mu_fit = as.vector(predict(gam(z_mean ~ s(x_axis, y_axis), data = var1_mean_dt), 
                                   newdata = data.frame(x_axis = rep(x_axis, each = length(y_axis)),
@@ -263,7 +263,7 @@ mufpca = function(
                             y_axis = rep(y_axis, length(x_axis)),
                             z_mean = c(z_mean))
   ## smooth the two-dimensional empirical mean function using the thin plate regression splines
-  ## using the 'gam' function in the 'mgcv' package
+  ## via the 'gam' function in the 'mgcv' package
   ## see '?mgcv::gam' for more details on the configuration of the smoothing process
   z_mu_fit = as.vector(predict(gam(z_mean ~ s(x_axis, y_axis), data = z_mean_dt), 
                                   newdata = data.frame(x_axis = rep(x_axis, each = length(y_axis)),
