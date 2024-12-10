@@ -34,7 +34,7 @@
 ###########################################################################################
 # Set the working direction
 ###########################################################################################
-setwd("path_to_file")          # replace "path_to_file" with the working direction
+setwd("path_to_file")          # replace "path_to_file" with the path to working environment
 
 ###########################################################################################
 # Load packages and required files
