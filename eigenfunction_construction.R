@@ -7,7 +7,7 @@
 ## Main function:
 ##    1. eigenf_construct: Function constructing the multilevel multi- and uni-variate 
 ##                         two-dimensional eigenfunctions used in the simulation.
-## Supporting functions used by main function:
+## Supporting functions used by the main function:
 ##    1. pi: Function forming a two-dimensional Gaussian kernel.
 ###########################################################################################
 
