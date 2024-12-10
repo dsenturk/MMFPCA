@@ -46,6 +46,7 @@ require(pracma)
 require(mgcv)
 require(mvtnorm)
 require(refund)
+require(tidyverse)
 require(ggplot2)
 source("eigenfunction_construction.R")          # Functions that construct multi- and uni-variate eigenfunctions
 source("simulation_data_generation.R")          # Functions that generate multilevel multivariate functional data sets
