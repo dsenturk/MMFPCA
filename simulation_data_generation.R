@@ -37,7 +37,7 @@ shared_gen = function(
   ## Returns:     a list of generated multilevel multivariate functional data
   ##              z_var1: multilevel functional data for variate 1 (matrix of dimension NR*M)
   ##              z_var2: multilevel functional data for variate 2 (matrix of dimension NR*M)
-  ##              id_array: id information for each trial to identify the subject it belong to (array of length NR)
+  ##              id_array: id information for each trial to identify the subject it belongs to (array of length NR)
   #########################################################################################
   
   M = nrow(eigen_lvl1_var1)         # number of sampling grids
@@ -106,7 +106,7 @@ corr_gen = function(
   ## Returns:     a list of generated multilevel multivariate functional data
   ##              z_var1: multilevel functional data for variate 1 (matrix of dimension NR*M)
   ##              z_var2: multilevel functional data for variate 2 (matrix of dimension NR*M)
-  ##              id_array: id information for each trial to identify the subject it belong to (array of length NR)
+  ##              id_array: id information for each trial to identify the subject it belongs to (array of length NR)
   #########################################################################################
   
   M = nrow(eigen_lvl1_var1)         # number of sampling grids
