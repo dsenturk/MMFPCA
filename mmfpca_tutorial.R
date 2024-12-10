@@ -142,7 +142,7 @@ shared_reconstruction = reconstruction_plots(shared_dt,
                                              subject,
                                              trial)
 
-print(shared_reconstruction)                             # Figure S7
+print(shared_reconstruction)                 # Figure S7
 
 
 
@@ -206,12 +206,12 @@ corr_figures = efunctions_plots(corr_efunctions_matched,
                                 y_axis = seq(0.02, 1, length = 50))
 
 ## subject-level
-print(corr_figures$lvl1$var1)                           # Figure S8
-print(corr_figures$lvl1$var2)                           # Figure S9
+print(corr_figures$lvl1$var1)              # Figure S8
+print(corr_figures$lvl1$var2)              # Figure S9
 
 ## subject-level
-print(corr_figures$lvl2$var1)                           # Figure S10
-print(corr_figures$lvl2$var2)                           # Figure S11
+print(corr_figures$lvl2$var1)              # Figure S10
+print(corr_figures$lvl2$var2)              # Figure S11
 
 
 # 3.4 Compare the data reconstruction from the multilevel multi- and uni-variate FPCA ###
@@ -229,4 +229,4 @@ corr_reconstruction = reconstruction_plots(corr_dt,
                                            subject,
                                            trial)
 
-print(corr_reconstruction)                             # Figure S12
+print(corr_reconstruction)                 # Figure S12
