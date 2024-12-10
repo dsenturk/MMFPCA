@@ -8,9 +8,9 @@
 ## 1. eigenf_construct: Function constructing the multilevel multi- and uni-variate 
 ##                      two-dimensional eigenfunctions used in the simulation.
 ## 2. share_gen: Function that generates a multilevel multivariate functional data set
-##               with shared eigenscores across different variates
+##               with shared eigenscores across different variates (setting 1)
 ## 3. corr_gen: Function that generates a multilevel multivariate functional data set
-##              with eigenscores correlated between different variates
+##              with eigenscores correlated between different variates (setting 2)
 ## 4. mmfpca: Function that fits multilevel multivariate FPCA for high-dimensional 
 ##            functional data
 ## 5. mufpca: Function that fits multilevel univariate FPCA for high-dimensional functional
