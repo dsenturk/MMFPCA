@@ -34,8 +34,7 @@
 ###########################################################################################
 # Set the working direction
 ###########################################################################################
-#setwd("path_to_file")          # replace "path_to_file" with the working direction
-setwd("/Users/mingfei/Desktop/MMFPCA-VEPTF/mmfpca_github_241206")
+setwd("path_to_file")          # replace "path_to_file" with the working direction
 
 ###########################################################################################
 # Load packages and required files
@@ -167,7 +166,7 @@ corr_dt = corr_gen(eigen_lvl1_var1 = true_eigen$uni$lvl1$var1,
                    N = 50,
                    R = 50)
 
-# 2.2 Fit the multilevel multi- and uni-variate FPCA ######################################
+# 3.2 Fit the multilevel multi- and uni-variate FPCA ######################################
 ## multilevel multivariate FPCA
 corr_multi = mmfpca(z_var1 = corr_dt$z_var1,
                     z_var2 = corr_dt$z_var2,
@@ -193,7 +192,7 @@ corr_uni_var2 = mufpca(z_matrix = corr_dt$z_var2,
                        pve = 0.95,
                        efunctions_multi = FALSE)
 
-# 2.3 Compare the estimated eigenfunctions from the multilevel multi- and uni-variate FPCA
+# 3.3 Compare the estimated eigenfunctions from the multilevel multi- and uni-variate FPCA
 #     with the true multivariate eigenfunctions ###########################################
 ## match the sign of estimated eigenfunctions to the true eigenfunctions
 corr_efunctions_matched = efunctions_match(true_eigen$uni,
@@ -215,7 +214,7 @@ print(corr_figures$lvl2$var1)                           # Figure S10
 print(corr_figures$lvl2$var2)                           # Figure S11
 
 
-# 2.4 Compare the data reconstruction from the multilevel multi- and uni-variate FPCA ###
+# 3.4 Compare the data reconstruction from the multilevel multi- and uni-variate FPCA ###
 ## randomly select a single trial from a subject
 subject = sample(c(1:50), size = 1)
 trial = sample(c(1:50), size = 1)
@@ -231,11 +230,3 @@ corr_reconstruction = reconstruction_plots(corr_dt,
                                            trial)
 
 print(corr_reconstruction)                             # Figure S12
-
-
-
-
-
-
-
-
